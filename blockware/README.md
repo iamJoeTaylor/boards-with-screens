@@ -33,7 +33,7 @@ The easiest way to get started is using **[Visual Studio Code (VSCode)](https://
 
      NOTE: The program should compile and then upload to your block. It can also be handy to use the Serial Monitor to view any logs from the program that are output over the USB serial port.
 
-     If the upload fails with an error message like `Error: Please specify upload_port for environment` or `Timed out waiting for packet header`, then you may need to edit the [`platformio.ini`](https://github.com/bountylabs/blocks-with-screens/blob/main/blockware/curvy-snake/platformio.ini) in the blockware's directory to set a specific `upload_port`. Look in `/dev/` for a `tty` device named something like `usbserial` or `ttyUSB` or `wchusbserial` and change `upload_port` to match the path to that device exactly.
+     If the upload fails with an error message like `Error: Please specify upload_port for environment` or `Timed out waiting for packet header`, then you may need to edit the [`platformio.ini`](https://github.com/iamJoeTaylor/boards-with-screens/blob/main/blockware/curvy-snake/platformio.ini) in the blockware's directory to set a specific `upload_port`. Look in `/dev/` for a `tty` device named something like `usbserial` or `ttyUSB` or `wchusbserial` and change `upload_port` to match the path to that device exactly.
 
   8. That's it, you should see the demo running on your block!
 
