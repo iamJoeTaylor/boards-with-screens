@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name microcontroller-eagle-import)(type Legacy)(uri ${KIPRJMOD}/microcontroller-eagle-import.lib)(options "")(descr ""))
-)

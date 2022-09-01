@@ -8,7 +8,7 @@ This Blockware has two components -- a UDP server running on the block, and a UD
 
 ## Running the Server (on the block)
 
-Build and upload the code for the Blockware as detailed in the [Blockware README.md](https://github.com/bountylabs/blocks-with-screens/blob/main/blockware/README.md). Make sure to create a `src/secrets.h` based on the `src/secrets.h.example` and edit to include your WiFi credentials.
+Build and upload the code for the Blockware as detailed in the [Blockware README.md](https://github.com/iamJoeTaylor/boards-with-screens/blob/main/blockware/README.md). Make sure to create a `src/secrets.h` based on the `src/secrets.h.example` and edit to include your WiFi credentials.
 
 After programming your block should connect to your WiFi then show an IP address on the screen. Take note of the IP for the next step.
 
