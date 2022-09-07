@@ -23,6 +23,7 @@ INCLUDE_DIRS = \
 	-I${STUBS_DIR}
 
 VBLOX_OBJECTS_WASM = \
+	${STUBS_DIR}/SPI.wasm.o\
 	${STUBS_DIR}/FakeWifiHelper.wasm.o\
 	${STUBS_DIR}/SimHelpers.wasm.o\
 	${STUBS_DIR}/Adafruit_GFX.wasm.o\
