@@ -1,5 +1,3 @@
-#if !defined(EMSCRIPTEN)
-
 #include "Adafruit_SSD1351.h"
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -89,4 +87,3 @@ int main(int argc, char *argv[]) {
   printf("Quit\n");
   return 0;
 }
-#endif
