@@ -28,12 +28,12 @@ const int TOTAL_ENTITIES = 5;
 // state
 std::vector<Entity> entities;
 
-void flush()
+void flush(Adafruit_SSD1351 *tft)
 {
-  tft.drawRGBBitmap(0, 0, (uint16_t*)canvas->getBuffer(), screenWidth, screenHeight);
-  // tft.startWrite();
+  tft->drawRGBBitmap(0, 0, (uint16_t*)canvas->getBuffer(), screenWidth, screenHeight);
+  // tft->startWrite();
   // SPI.writeBytes((uint8_t *)canvas->getBuffer(), 128 * 128 * 2);
-  // tft.endWrite();
+  // tft->endWrite();
 }
 
 void tick()
@@ -51,16 +51,16 @@ void tick()
   }
 }
 
-void CurvySnake_setup()
+void CurvySnake_setup(Adafruit_SSD1351 *tft)
 {
   // save dimensions
-  screenWidth = tft.width();
-  screenHeight = tft.height();
+  screenWidth = tft->width();
+  screenHeight = tft->height();
 
   // initialize canvas to all black
   canvas = new GFXcanvas16(screenWidth, screenHeight);
   canvas->fillScreen(BLACK);
-  flush();
+  flush(tft);
 
   // create entities
   for (int i = 0; i != TOTAL_ENTITIES; i++) {
@@ -77,7 +77,7 @@ void CurvySnake_setup()
   // Serial.printf("\n%d -- %d\n", RGB565(0, 0, 255), BLUE);
 }
 
-void CurvySnake_loop()
+void CurvySnake_loop(Adafruit_SSD1351 *tft)
 {
   uint16_t now = millis();
   uint16_t time = now - lastLoop;
@@ -90,6 +90,6 @@ void CurvySnake_loop()
     tick();
 
     // flush our in-memory canvas to the screen
-    flush();
+    flush(tft);
   }
 }

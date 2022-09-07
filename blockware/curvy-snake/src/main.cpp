@@ -3,28 +3,34 @@
 
 #include <Adafruit_SSD1351.h>
 #include <SPI.h>
+#include <Colors.h>
 
 #include <CurvySnake.h>
-#include <Text.h>
 #include <DefaultConfig.h>
 
-Adafruit_SSD1351 tft =
-  Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, CS_PIN, DC_PIN, RST_PIN);
+Adafruit_SSD1351 *tft;
+
+void localDisplayReset() {
+  tft->fillScreen(BLACK);
+  tft->setCursor(0, 0);
+}
 
 void setup(void)
 {
-  Serial.begin(SERIAL_DATA_RATE);
-  tft.begin(SPI_SPEED);
+  SPIClass *spi = new SPIClass();
+  spi->begin(SCLK_PIN, -1, MOSI_PIN, CS_PIN);
+  tft = new Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, spi, CS_PIN, DC_PIN, RST_PIN);
+  tft->begin(SPI_SPEED);
 
   // initialize srand
   randomSeed(ESP.getCycleCount());
 
-  displayReset();
+  localDisplayReset();
 
-  CurvySnake_setup();
+  CurvySnake_setup(tft);
 }
 
 void loop()
 {
-  CurvySnake_loop();
+  CurvySnake_loop(tft);
 }
