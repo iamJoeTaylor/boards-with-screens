@@ -4,17 +4,16 @@
 #include <Adafruit_SSD1351.h>
 #include <SPI.h>
 #include <math.h>
+#include <Colors.h>
 
 #include <Random.h>
 #include <TLLogos.h>
-#include <Text.h>
 #include <Vec2d.h>
 #include <DefaultConfig.h>
 #include <vector>
 
 
-Adafruit_SSD1351 tft =
-  Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, CS_PIN, DC_PIN, RST_PIN);
+Adafruit_SSD1351 *tft;
 
 std::vector<unsigned char*> Logos;
 
@@ -35,10 +34,10 @@ unsigned char* logo;
 
 void flush()
 {
-  tft.drawRGBBitmap(0, 0, (uint16_t*)canvas->getBuffer(), screen.x, screen.y);
-  // tft.startWrite();
+  tft->drawRGBBitmap(0, 0, (uint16_t*)canvas->getBuffer(), screen.x, screen.y);
+  // tft->startWrite();
   // SPI.writeBytes((uint8_t *)canvas->getBuffer(), 128 * 128 * 2);
-  // tft.endWrite();
+  // tft->endWrite();
 }
 
 void drawLogo(const unsigned char* logo, int x, int y, int w, int h)
@@ -49,9 +48,11 @@ void drawLogo(const unsigned char* logo, int x, int y, int w, int h)
 void setup(void)
 {
   Serial.begin(SERIAL_DATA_RATE);
-  tft.begin(SPI_SPEED);
-
-  tft.fillScreen(BLACK);
+  SPIClass *spi = new SPIClass();
+  spi->begin(SCLK_PIN, -1, MOSI_PIN, CS_PIN);
+  tft = new Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, spi, CS_PIN, DC_PIN, RST_PIN);
+  tft->begin(SPI_SPEED);
+  tft->fillScreen(BLACK);
 
   // initialize srand
   randomSeed(ESP.getCycleCount());
@@ -65,8 +66,8 @@ void setup(void)
   Logos.push_back(tl_yellow);
 
   // save dimensions
-  screen.x = tft.width();
-  screen.y = tft.height();
+  screen.x = tft->width();
+  screen.y = tft->height();
 
   // initialize canvas to all black
   canvas = new GFXcanvas16(screen.x, screen.y);
