@@ -4,14 +4,14 @@
 #include <Adafruit_SSD1351.h>
 #include <SPI.h>
 #include <math.h>
+#include <Colors.h>
 
 #include <Random.h>
 #include <TLLogos.h>
-#include <Text.h>
 #include <Particle.h>
 #include <DefaultConfig.h>
 
-#include <LIS2DW12Sensor.h>
+#include <SparkFun_MMA8452Q.h>
 #include <optional>
 
 const int tlWidth = 40;
@@ -20,8 +20,7 @@ const char *username = "@twitter";
 const char *years = "5 years";
 
 
-Adafruit_SSD1351 tft =
-  Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, CS_PIN, DC_PIN, RST_PIN);
+Adafruit_SSD1351 *tft;
 
 std::vector<Particle> Particles;
 std::optional<Particle> currRocket;
@@ -61,7 +60,8 @@ uint16_t fastLogoColorSteps = 40;
 uint16_t totalLogoColorSteps = defaultLogoColorSteps;
 
 // Accelerometer
-LIS2DW12Sensor* acc;
+#define ACCEL_ADDR 0x1C
+MMA8452Q accel(ACCEL_ADDR);
 uint32_t accState;
 bool wakeupText = true;
 bool wakeupAll = true;
@@ -260,7 +260,13 @@ void updateGravity(const int16_t (&accelAxes)[3])
 
 void readAccelerometer(int16_t (&accelAxes)[3])
 {
-  acc->Get_X_AxesRaw(accelAxes);
+  // Read accelerometer and run the physics
+  accel.read();
+  int16_t g[] = {accel.x, accel.y, accel.z};
+  // log_d("accel.read() %d %d %d", accel.x, accel.y, accel.z);
+  accelAxes[0] = g[0];
+  accelAxes[1] = g[1];
+  accelAxes[2] = g[2];
 }
 
 void initText()
@@ -276,7 +282,7 @@ void initText()
 void flush()
 {
   // write canvas to screen
-  tft.drawRGBBitmap(0, 0, (uint16_t*)canvas->getBuffer(), screen.x, screen.y);
+  tft->drawRGBBitmap(0, 0, (uint16_t*)canvas->getBuffer(), screen.x, screen.y);
 }
 
 void initialize() {
@@ -321,6 +327,9 @@ void loop()
     // track loop millis to keep steady fps
     lastLoop = now;
 
+    // Wait for the accelerometer to become ready
+    while (!accel.available()) {}
+
     // run!
     tick();
 
@@ -332,13 +341,17 @@ void loop()
 void setup(void)
 {
   Serial.begin(SERIAL_DATA_RATE);
-  tft.begin(SPI_SPEED);
+  SPIClass *spi = new SPIClass();
+  spi->begin(SCLK_PIN, -1, MOSI_PIN, CS_PIN);
+  tft = new Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, spi, CS_PIN, DC_PIN, RST_PIN);
+  tft->begin(SPI_SPEED);
+  
   // initialize screen to black
-  tft.fillScreen(BLACK);
+  tft->fillScreen(BLACK);
 
   // save dimensions
-  screen.x = tft.width();
-  screen.y = tft.height();
+  screen.x = tft->width();
+  screen.y = tft->height();
 
   // initialize canvas to all black
   canvas = new GFXcanvas16(screen.x, screen.y);
@@ -348,11 +361,11 @@ void setup(void)
   randomSeed(ESP.getCycleCount());
 
   // setup accelerometer
-  Wire.begin();
-  acc = new LIS2DW12Sensor(&Wire, 0x31U);
-  int begin_retval = acc->begin();
-  Serial.printf("begin returned: %d\n", begin_retval);
-  acc->Enable_X();
+  Wire.begin(SDA_PIN, SCL_PIN);
+  if (!accel.begin(Wire, ACCEL_ADDR)) {
+    log_e("Accelerometer error");
+  };
+  // acc->Enable_X();
   // Max is 700000 in 160MHz mode and 400000 in 80MHz mode
   Wire.setClock(700000); // Run I2C at 700 KHz for faster screen updates
 

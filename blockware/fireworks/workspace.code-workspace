@@ -90,7 +90,13 @@
       "stop_token": "cpp",
       "cinttypes": "cpp",
       "__functional_03": "cpp",
-      "__memory": "cpp"
+      "__memory": "cpp",
+      "codecvt": "cpp",
+      "fstream": "cpp",
+      "iomanip": "cpp",
+      "iostream": "cpp",
+      "stack": "cpp",
+      "unordered_set": "cpp"
     }
   }
 }
