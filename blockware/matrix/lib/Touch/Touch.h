@@ -2,7 +2,7 @@
 
 #include <Adafruit_SSD1351.h>
 // Accelerometer
-#include <LIS2DW12Sensor.h>
+#include <SparkFun_MMA8452Q.h>
 
 class Touch {
 private:
@@ -31,11 +31,11 @@ public:
   static const uint8_t Y_AXIS = 1;
   static const uint8_t Z_AXIS = 2;
 
-  static LIS2DW12Sensor* accel;
+  static MMA8452Q accel;
 
-  void init(TwoWire *wire, int16_t sensitivity);
-  Touch(TwoWire *wire);
-  Touch(TwoWire *wire, int16_t sensitivity);
+  void init(TwoWire wire, int16_t sensitivity);
+  Touch(TwoWire wire);
+  Touch(TwoWire wire, int16_t sensitivity);
   void tick(void);
   bool isRest();
   int16_t X();

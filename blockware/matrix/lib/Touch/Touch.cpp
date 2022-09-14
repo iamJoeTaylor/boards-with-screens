@@ -9,22 +9,21 @@
 // note: ‘memcpy’ is defined in header ‘<cstring>’; did you forget to ‘#include <cstring>’?
 #include <cstring>
 
-#define ACCEL_ADDR 0x31U
+#define ACCEL_ADDR 0x1C
+MMA8452Q Touch::accel(ACCEL_ADDR);
 
-LIS2DW12Sensor* Touch::accel;
-
-void Touch::init(TwoWire* wire, int16_t _sensitivity)
+void Touch::init(TwoWire wire, int16_t _sensitivity)
 {
   // setup global static accelerometer
-  Touch::accel = new LIS2DW12Sensor(wire, ACCEL_ADDR);
+  if (!accel.begin(wire, ACCEL_ADDR)) {
+    log_e("Accelerometer error");
+  };
 
   // `accel->begin()` always returns `false`
   // if (!accel->begin()) {
   //   DLOG("\n[ERROR] Unable to begin accelerometer");
   //   // err(250);
   // }
-
-  Touch::accel->Enable_X();
 
   sensitivity = _sensitivity;
 
@@ -41,12 +40,12 @@ void Touch::init(TwoWire* wire, int16_t _sensitivity)
   }
 }
 
-Touch::Touch(TwoWire* wire)
+Touch::Touch(TwoWire wire)
 {
   init(wire, DEFAULT_SENSITIVITY);
 }
 
-Touch::Touch(TwoWire* wire, int16_t sensitivity)
+Touch::Touch(TwoWire wire, int16_t sensitivity)
 {
   init(wire, sensitivity);
 }
@@ -64,7 +63,9 @@ void Touch::tick()
 
   // read acceleromteter into global axes_read
   // each slot is an array of 3 signed 16-bit integers values (-32768 to +32767)
-  Touch::accel->Get_X_AxesRaw(axes_read);
+  accel.read();
+  int16_t axes_read[] = {accel.x, accel.y, accel.z};
+
   for (uint8_t axis = 0; axis < AXES_COUNT; axis++) {
     // store absolute delta from previous measurement (previous_axes)
     axes_history_raw[current_axes][axis] = axes_read[axis];

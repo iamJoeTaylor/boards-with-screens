@@ -66,7 +66,7 @@ void loop()
 
 void setup(void)
 {
-  Wire.begin();
+  Wire.begin(SDA_PIN, SCL_PIN);
   // Max is 700000 in 160MHz mode and 400000 in 80MHz mode
   // Run I2C at 700 KHz for faster screen updates
   Wire.setClock(700000);

@@ -13,7 +13,7 @@ void Matrix::init()
   Canvas::canvas->setTextSize(1);
 
   // initialize Touch instance
-  touch = new Touch(&Wire);
+  touch = new Touch(Wire.begin(SDA_PIN, SCL_PIN));
 
   // generate enough MatrixRain instances to cover 2 screen widths and push onto vector
   int matrixWidth = 2 * Canvas::canvas->width();
