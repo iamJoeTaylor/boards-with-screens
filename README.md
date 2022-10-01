@@ -1,6 +1,6 @@
 # Boards With Screens
 
-This project is built is inspired by the [Blocks with Screens](https://github.com/bountylabs/blocks-with-screens) project.
+This project is inspired by the [Blocks with Screens](https://github.com/bountylabs/blocks-with-screens) project.
 
 ## Components
 
